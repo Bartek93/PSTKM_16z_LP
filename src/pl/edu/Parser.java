@@ -1,12 +1,16 @@
 package pl.edu;
 
 import java.util.List;
+import java.util.Map;
 
 import edu.asu.emit.algorithm.graph.Path;
 import edu.asu.emit.algorithm.graph.Graph;
 import edu.asu.emit.algorithm.graph.shortestpaths.YenTopKShortestPathsAlg;
+import edu.asu.emit.algorithm.utils.Pair;
 
 public class Parser {
+	
+	
 
 	public static Integer[] parse(String dataFileName, int srcNode,
 			int dstNode, int numberOfPaths) {
@@ -25,6 +29,12 @@ public class Parser {
 //		if (shortest_paths_list.size() < numberOfPaths) {
 //			throw new ExceptionInInitializerError();
 //		}
+		
+		System.out.println("Initial load: ");
+		Map<Pair<Integer, Integer>, Integer> edges = graph.getEdges();
+		for(Pair<Integer, Integer> pair : edges.keySet()) {
+			System.out.println("Edge " + pair.first() + " - " + pair.second() + ": " + edges.get(pair));
+		}
 
 		String path = shortest_paths_list.get(numberOfPaths - 1)
 				.getVertexList().toString();

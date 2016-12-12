@@ -72,6 +72,10 @@ public class Graph implements BaseGraph {
 	protected Map<Pair<Integer, Integer>, Double> vertexPairWeightIndex = 
 		new HashMap<Pair<Integer, Integer>, Double>();
 	
+	// list of edge initial load in the graph
+	protected Map<Pair<Integer, Integer>, Integer> edgeIntialLoadIndex = 
+			new HashMap<Pair<Integer, Integer>, Integer>();
+	
 	// index for vertices in the graph
 	protected Map<Integer, BaseVertex> idVertexIndex = 
 		new HashMap<Integer, BaseVertex>();
@@ -172,7 +176,8 @@ public class Graph implements BaseGraph {
 					int startVertexId = Integer.parseInt(strList[0]);
 					int endVertexId = Integer.parseInt(strList[1]);
 					double weight = Double.parseDouble(strList[2]);
-					addEdge(startVertexId, endVertexId, weight);
+					int intialLoad = Integer.parseInt(strList[3]);
+					addEdge(startVertexId, endVertexId, weight, intialLoad);
 				}
 				//
 				line = bufRead.readLine();
@@ -193,7 +198,7 @@ public class Graph implements BaseGraph {
 	 * @param endVertexId
 	 * @param weight
 	 */
-	protected void addEdge(int startVertexId, int endVertexId, double weight) {
+	protected void addEdge(int startVertexId, int endVertexId, double weight, int initialLoad) {
 		// actually, we should make sure all vertices ids must be correct. 
 		if (!idVertexIndex.containsKey(startVertexId) || 
 			!idVertexIndex.containsKey(endVertexId) || 
@@ -220,6 +225,9 @@ public class Graph implements BaseGraph {
 		vertexPairWeightIndex.put(
 				new Pair<Integer, Integer>(startVertexId, endVertexId), 
 				weight);
+		edgeIntialLoadIndex.put(
+				new Pair<Integer, Integer>(startVertexId, endVertexId), 
+				initialLoad);
 		++edgeNum;
 	}
 	
@@ -278,6 +286,16 @@ public class Graph implements BaseGraph {
 							vertexPairWeightIndex.get(
 									new Pair<Integer, Integer>(source.getId(), sink.getId())) 
 						  : DISCONNECTED;
+	}
+	
+	public int getEdgeIntialLoad(BaseVertex source, BaseVertex sink) {
+		return edgeIntialLoadIndex.containsKey(new Pair<Integer, Integer>(source.getId(), sink.getId())) ? 
+				edgeIntialLoadIndex.get(new Pair<Integer, Integer>(source.getId(), sink.getId()))
+						  :  (int) DISCONNECTED;
+	}
+	
+	public Map<Pair<Integer, Integer>, Integer> getEdges() {
+		return edgeIntialLoadIndex;
 	}
 
 	/**

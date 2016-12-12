@@ -81,6 +81,7 @@ public class Path implements BaseElementWithWeight {
 	}
 	
 	public String toString() {
-		return vertexList.toString() + ":" + weight;
+		//return vertexList.toString() + ":" + weight;
+		return vertexList.toString();
 	}
 }
