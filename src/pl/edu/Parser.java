@@ -16,12 +16,13 @@ public class Parser {
 			int dstNode, int numberOfPaths) {
 
 		Graph graph = new Graph(dataFileName);
-		System.out.println(graph.getVertexList());
+		System.out.println("Vertices: " + graph.getVertexList());
 		YenTopKShortestPathsAlg yenAlg = new YenTopKShortestPathsAlg(graph);
 		List<Path> shortest_paths_list = yenAlg.getShortestPaths(
 				graph.getVertex(srcNode), graph.getVertex(dstNode),
 				numberOfPaths);
-		System.out.println(":" + shortest_paths_list);
+		System.out.println("Source node: " + srcNode + ", destination node: " + dstNode);
+		System.out.println("Shortest paths:" + shortest_paths_list);
 
 		// Object x = shortest_paths_list.toArray();
 		// System.out.println(yenAlg.getResultList().size());
@@ -36,23 +37,23 @@ public class Parser {
 			System.out.println("Edge " + pair.first() + " - " + pair.second() + ": " + edges.get(pair));
 		}
 
-		String path = shortest_paths_list.get(numberOfPaths - 1)
+		String optimalVertexList = shortest_paths_list.get(numberOfPaths - 1)
 				.getVertexList().toString();
 
-		System.out.println("From: " + srcNode + " To: " + dstNode + "  - "
-				+ path);
+		System.out.println("Optimal path from: " + srcNode + " to: " + dstNode + "  - "
+				+ optimalVertexList);
 
-		String[] tokens = path.split(":");
-		String[] items = tokens[0].replaceAll("\\[", "").replaceAll("\\]", "")
+		String[] tokens = optimalVertexList.split(":");
+		String[] optimalVertexTab = tokens[0].replaceAll("\\[", "").replaceAll("\\]", "")
 				.replaceAll(" ", "").split(",");
 
-		Integer[] results = new Integer[items.length];
+		Integer[] results = new Integer[optimalVertexTab.length];
 
-		for (int i = 0; i < items.length; i++) {
+		for (int i = 0; i < optimalVertexTab.length; i++) {
 			try {
-				results[i] = Integer.parseInt(items[i]);
-				// System.out.print(results[i].toString());
-				// System.out.println();
+				results[i] = Integer.parseInt(optimalVertexTab[i]);
+				 System.out.print(results[i].toString());
+				 System.out.println();
 			} catch (NumberFormatException nfe) {
 				System.err.println(nfe.toString());
 			}
