@@ -30,3 +30,5 @@ manifest.mf
 nbproject
 build.xml
 /bin/
+/dist/
+build/
