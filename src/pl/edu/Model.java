@@ -13,7 +13,6 @@ public class Model {
 
     private void createModel(){
         
-        int modularity = Config.MODULARITY;
         int demands = 2; //get from parser
         int paths = 2; //get from parser - each demand should has got its own paths collection
         
