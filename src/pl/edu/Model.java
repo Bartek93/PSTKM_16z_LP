@@ -1,10 +1,18 @@
 package pl.edu;
 
+import java.util.List;
+
+import pl.edu.pojo.Demand;
+import pl.edu.pojo.Path;
 import ilog.concert.IloException;
 import ilog.concert.IloNumVar;
 import ilog.cplex.IloCplex;
 
 public class Model {
+	
+	private List<Demand> demands;
+	private List<Path> paths;
+	
 	
     public Model()
     {
