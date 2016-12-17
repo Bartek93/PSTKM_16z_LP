@@ -23,6 +23,7 @@ public class Parser {
 
 		Map<Demand, List<Path>> map = new HashMap<Demand, List<Path>>();
 		List<Demand> demands = new ArrayList<Demand>();
+		
 		// get demands
 		try {
 			// 1. read the file and put the content in the buffer
@@ -40,21 +41,23 @@ public class Parser {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
+		
 		Graph graph = new Graph(graphFileName);
-		System.out.println("Initial load: ");
+		System.out.println("\nVertices: " + graph.getVertexList());
+		System.out.println("\nInitial load: ");
 		Map<Pair<Integer, Integer>, Integer> edges = graph.getEdges();
 		for (Pair<Integer, Integer> pair : edges.keySet()) {
 			System.out.println("Edge " + pair.first() + " - " + pair.second()
 					+ ": " + edges.get(pair));
 		}
-		System.out.println("Vertices: " + graph.getVertexList());
+		
 		YenTopKShortestPathsAlg yenAlg = new YenTopKShortestPathsAlg(graph);
 
 		for (Demand d : demands) {
 			List<Path> shortest_paths_list = yenAlg.getShortestPaths(
 					graph.getVertex(d.getSrcNode()),
 					graph.getVertex(d.getDstNode()), numberOfPaths);
-			System.out.println("Source node: " + d.getSrcNode()
+			System.out.println("\nSource node: " + d.getSrcNode()
 					+ ", destination node: " + d.getDstNode());
 			System.out.println("Shortest paths:" + shortest_paths_list);
 			map.put(d, shortest_paths_list);
@@ -93,23 +96,27 @@ public class Parser {
 		return map;
 	}
 
-	public static void dumpToFile(Map<Demand, List<Path>> demandPathsMap,
-			String fileName) {
+	public static void dumpToFile(Map<Demand, List<Path>> demandPathsMap, String fileName) {
 
 		try {
 			PrintWriter writer = new PrintWriter("output/" + fileName, "UTF-8");
 			int count = 1;
 			for (Demand d : demandPathsMap.keySet()) {
+				
 				writer.println("Demand: " + count);
+				
 				// demand
-				writer.println(d.getSrcNode() + " " + d.getDstNode() + " "
-						+ d.getValue());
-				List<Path> paths = demandPathsMap.get(d);
+				writer.println(d.getSrcNode() + " " + d.getDstNode() + " " + d.getValue());
+				
 				// number of paths
+				List<Path> paths = demandPathsMap.get(d);				
 				writer.println(paths.size());
 
+				
 				for (Path p : paths) {
+					// number of edges in path
 					writer.print(paths.indexOf(p) + 1 + " ");
+					// edges ids
 					for (BaseVertex v : p.getVertexList()) {
 						writer.print(v.getId() + " ");
 					}
@@ -118,10 +125,10 @@ public class Parser {
 				writer.println();
 				count++;
 			}
-			
+
 			writer.close();
 		} catch (IOException e) {
-
+			System.out.println("IOException: " + e.toString());
 		}
 
 	}
