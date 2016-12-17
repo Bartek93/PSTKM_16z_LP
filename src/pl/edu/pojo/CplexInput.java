@@ -5,8 +5,8 @@ import java.util.Map;
 
 public class CplexInput {
 	
-	Map<Demand, List<PathWithEgdes>> demandPathsMap; // map demands : list of paths that realizes this demand
-	List<Edge> edges; // all edges in graph
+	private Map<Demand, List<PathWithEgdes>> demandPathsMap; // map demands : list of paths that realizes this demand
+	private List<Edge> edges; // all edges in graph
 	
 	public Map<Demand, List<PathWithEgdes>> getDemandPathsMap() {
 		return demandPathsMap;

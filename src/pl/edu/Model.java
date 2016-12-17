@@ -45,7 +45,7 @@ public class Model {
             }
             
             /// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
-            IloIntVar h_d = cplex.intVar(0, Integer.MAX_VALUE, "h_d");
+            IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
             
             // definicja 
             
