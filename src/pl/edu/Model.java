@@ -4,8 +4,9 @@ import java.util.List;
 import java.util.Map;
 
 import edu.asu.emit.algorithm.graph.Path;
+import pl.edu.pojo.CplexInput;
 import pl.edu.pojo.Demand;
-
+import pl.edu.pojo.PathWithEgdes;
 import ilog.concert.*;
 import ilog.cplex.*;
 
@@ -20,9 +21,11 @@ public class Model {
 
     }
 
-    public void createModel(Map<Demand, List<Path>> demandPathsMap){
+    public void createModel(CplexInput cplexInput, int numberOfPaths){
         
         try {
+        	Map<Demand, List<PathWithEgdes>> demandPathsMap = cplexInput.getDemandPathsMap();
+        	
             IloCplex cplex = new IloCplex();
             int d_length = demandPathsMap.keySet().size();
             int p_length = 0;
@@ -34,8 +37,8 @@ public class Model {
             //x_dp
             IloNumVar[][] x_dp = new IloNumVar[d_length][p_length]; 
             for(Demand d : demandPathsMap.keySet()) {
-            	List<Path> paths = demandPathsMap.get(d);
-            	for(Path p : paths) {
+            	List<PathWithEgdes> paths = demandPathsMap.get(d);
+            	for(PathWithEgdes p : paths) {
             		int pathId = paths.indexOf(p) + 1;
             		x_dp[d.getId()-1][pathId] = cplex.intVar(0, Integer.MAX_VALUE, "x_" + d.getId() + "-" + pathId);
             	}
