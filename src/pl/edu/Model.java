@@ -1,12 +1,13 @@
 package pl.edu;
 
 import java.util.List;
+import java.util.Map;
 
+import edu.asu.emit.algorithm.graph.Path;
 import pl.edu.pojo.Demand;
-import pl.edu.pojo.Path;
-import ilog.concert.IloException;
-import ilog.concert.IloNumVar;
-import ilog.cplex.IloCplex;
+
+import ilog.concert.*;
+import ilog.cplex.*;
 
 public class Model {
 	
@@ -19,20 +20,31 @@ public class Model {
 
     }
 
-    private void createModel(){
-        
-        int demands = 2; //get from parser
-        int paths = 2; //get from parser - each demand should has got its own paths collection
+    public void createModel(Map<Demand, List<Path>> demandPathsMap){
         
         try {
             IloCplex cplex = new IloCplex();
-            
-            //x_dp not finished
-            IloNumVar[][] x = new IloNumVar[paths][]; //or [demands][]?
-            for (int i = 0; i < paths; i++) {
-                x[i] = cplex.numVarArray(demands, 0, Double.MAX_VALUE);
+            int d_length = demandPathsMap.keySet().size();
+            int p_length = 0;
+            for(Demand d : demandPathsMap.keySet()) {
+            	p_length = demandPathsMap.get(d).size();
+            	break;
             }
             
+            //x_dp
+            IloNumVar[][] x_dp = new IloNumVar[d_length][p_length]; 
+            for(Demand d : demandPathsMap.keySet()) {
+            	List<Path> paths = demandPathsMap.get(d);
+            	for(Path p : paths) {
+            		int pathId = paths.indexOf(p) + 1;
+            		x_dp[d.getId()-1][pathId] = cplex.intVar(0, Integer.MAX_VALUE, "x_" + d.getId() + "-" + pathId);
+            	}
+            }
+            
+            /// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
+            IloIntVar h_d = cplex.intVar(0, Integer.MAX_VALUE, "h_d");
+            
+            // definicja 
             
             
             /* TUTORIAL: https://www.youtube.com/watch?v=HMLLDp476ts&index=3&list=PL9xwgp-nwd-wwPhYaN3vUyduglg2m-xHO

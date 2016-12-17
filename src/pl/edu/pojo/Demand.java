@@ -5,12 +5,21 @@ public class Demand {
 	private int srcNode;
 	private int dstNode;
 	private int value;
-	
-	public Demand(int srcNode, int dstNode, int value) {
-		super();
+	private int id;
+
+	public Demand(int id, int srcNode, int dstNode, int value) {
+		this.id = id;
 		this.srcNode = srcNode;
 		this.dstNode = dstNode;
 		this.value = value;
+	}
+	
+	public int getId() {
+		return id;
+	}
+
+	public void setId(int id) {
+		this.id = id;
 	}
 
 	public int getSrcNode() {

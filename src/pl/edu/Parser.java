@@ -30,11 +30,13 @@ public class Parser {
 			BufferedReader bufRead = new BufferedReader(input);
 
 			String line = bufRead.readLine();
+			int count = 1;
 			while (line != null) {
 				String[] strList = line.trim().split("\\s");
-				demands.add(new Demand(Integer.parseInt(strList[0]), Integer
+				demands.add(new Demand(count, Integer.parseInt(strList[0]), Integer
 						.parseInt(strList[1]), Integer.parseInt(strList[2])));
 				line = bufRead.readLine();
+				count++;
 			}
 			bufRead.close();
 		} catch (Exception e) {

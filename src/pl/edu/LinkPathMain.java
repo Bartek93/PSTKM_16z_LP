@@ -13,9 +13,13 @@ public class LinkPathMain {
 		Model model = new Model();
 		
 		System.out.println("---------- 1st example ----------");
-		Map<Demand, List<Path>> demandPathsMap = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", 3);
+		int numberOfPaths = 3;
+		Map<Demand, List<Path>> demandPathsMap = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", numberOfPaths);
 		
 		Parser.dumpToFile(demandPathsMap, "tivial_dump.txt");
+		
+		model.createModel(demandPathsMap);
+		
 		
 //		System.out.println("---------- 2nd example ----------");
 //		Parser.parse("resources/non-trivial_1.txt", 1, 3, 4);
