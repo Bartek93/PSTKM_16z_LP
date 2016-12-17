@@ -21,8 +21,8 @@ public class LinkPathMain {
 		System.out.println(input.getEdges());
 		System.out.println(input.getDemandPathsMap());
 		
-//		Parser.dumpToFile(input.getDemandPathsMap(), "trivial_dump.txt");
-//		
+		Parser.dumpToFile(input.getDemandPathsMap(), "trivial_dump.txt");
+		
 		model.createModel(input, numberOfPaths);
 		
 		

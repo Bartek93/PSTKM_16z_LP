@@ -37,8 +37,9 @@ public class Parser {
 			int count = 1;
 			while (line != null) {
 				String[] strList = line.trim().split("\\s");
-				demands.add(new Demand(count, Integer.parseInt(strList[0]), Integer
-						.parseInt(strList[1]), Integer.parseInt(strList[2])));
+				demands.add(new Demand(count, Integer.parseInt(strList[0]),
+						Integer.parseInt(strList[1]), Integer
+								.parseInt(strList[2])));
 				line = bufRead.readLine();
 				count++;
 			}
@@ -49,17 +50,27 @@ public class Parser {
 		// load graph
 		Graph graph = new Graph(graphFileName);
 		System.out.println("\nVertices: " + graph.getVertexList());
-		
+
 		// get intial loads and fill list of edges
 		Map<Pair<Integer, Integer>, Integer> edgesMap = graph.getEdges();
 		List<Edge> edges = new ArrayList<Edge>();
 		int count = 1;
 		for (Pair<Integer, Integer> pair : edgesMap.keySet()) {
-			Edge edge = new Edge(count, pair.first(), pair.second(), edgesMap.get(pair));
+			Edge edge = new Edge(count, pair.first(), pair.second(),
+					edgesMap.get(pair));
+			if (!edges.isEmpty()) {
+				Edge lastEdge = edges.get(edges.size() - 1);
+				if (lastEdge.getEndNode() == edge.getStartNode()
+						&& lastEdge.getStartNode() == edge.getEndNode()) {
+					// the same edge
+					edge.setIndex(lastEdge.getIndex());
+					count++;
+				}
+			}
 			edges.add(edge);
-			count++;
+
 		}
-		
+
 		cplexInput.setEdges(edges);
 
 		// get list of paths for every demand
@@ -71,53 +82,54 @@ public class Parser {
 			System.out.println("\nSource node: " + d.getSrcNode()
 					+ ", destination node: " + d.getDstNode());
 			System.out.println("Shortest paths:" + shortest_paths_list);
-			
+
 			List<PathWithEgdes> paths = new ArrayList<PathWithEgdes>();
-			for(Path p : shortest_paths_list) {
+			for (Path p : shortest_paths_list) {
 				List<BaseVertex> vertices = p.getVertexList();
 				List<Edge> edgesOfPath = new ArrayList<Edge>();
-				for(int i = 0; i < vertices.size()-1; i++) {
+				for (int i = 0; i < vertices.size() - 1; i++) {
 					int src = vertices.get(i).getId();
-					int dst = vertices.get(i+1).getId();
+					int dst = vertices.get(i + 1).getId();
 					Edge edge = cplexInput.getEdgeByNodePair(src, dst);
 					edgesOfPath.add(edge);
 				}
-				PathWithEgdes path = new PathWithEgdes(shortest_paths_list.indexOf(p)+1, edgesOfPath);
+				PathWithEgdes path = new PathWithEgdes(
+						shortest_paths_list.indexOf(p) + 1, edgesOfPath);
 				paths.add(path);
 			}
-			
-			
+
 			map.put(d, paths);
 		}
-		
+
 		cplexInput.setDemandPathsMap(map);
-		
+
 		return cplexInput;
 	}
 
-	public static void dumpToFile(Map<Demand, List<Path>> demandPathsMap, String fileName) {
+	public static void dumpToFile(
+			Map<Demand, List<PathWithEgdes>> demandPathsMap, String fileName) {
 
 		try {
 			PrintWriter writer = new PrintWriter("output/" + fileName, "UTF-8");
 			int count = 1;
 			for (Demand d : demandPathsMap.keySet()) {
-				
+
 				writer.println("Demand: " + count);
-				
+
 				// demand
-				writer.println(d.getSrcNode() + " " + d.getDstNode() + " " + d.getValue());
-				
+				writer.println(d.getSrcNode() + " " + d.getDstNode() + " "
+						+ d.getValue());
+
 				// number of paths
-				List<Path> paths = demandPathsMap.get(d);				
+				List<PathWithEgdes> paths = demandPathsMap.get(d);
 				writer.println(paths.size());
 
-				
-				for (Path p : paths) {
+				for (PathWithEgdes p : paths) {
 					// number of edges in path
 					writer.print(paths.indexOf(p) + 1 + " ");
 					// edges ids
-					for (BaseVertex v : p.getVertexList()) {
-						writer.print(v.getId() + " ");
+					for (Edge e : p.getEdges()) {
+						writer.print(e.getIndex() + " ");
 					}
 					writer.println();
 				}

@@ -28,7 +28,12 @@ public class Edge {
     {
         return this.index;
     }
-    public int getStartNode()
+    
+    public void setIndex(int index) {
+		this.index = index;
+	}
+
+	public int getStartNode()
     {
         return this.startNode;
     }
