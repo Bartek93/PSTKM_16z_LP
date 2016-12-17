@@ -20,17 +20,13 @@ public class Model {
 
     }
 
-    public void createModel(Map<Demand, List<Path>> demandPathsMap){
+    public void createModel(Map<Demand, List<Path>> demandPathsMap, int numberOfpaths){
         
         try {
             IloCplex cplex = new IloCplex();
             int d_length = demandPathsMap.keySet().size();
-            int p_length = 0;
-            for(Demand d : demandPathsMap.keySet()) {
-            	p_length = demandPathsMap.get(d).size();
-            	break;
-            }
-            
+            int p_length = numberOfpaths;
+
             //x_dp
             IloNumVar[][] x_dp = new IloNumVar[d_length][p_length]; 
             for(Demand d : demandPathsMap.keySet()) {

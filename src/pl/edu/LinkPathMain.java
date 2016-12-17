@@ -20,7 +20,7 @@ public class LinkPathMain {
 		
 		Parser.dumpToFile(demandPathsMap, "trivial_dump.txt");
 		
-		model.createModel(demandPathsMap);
+		model.createModel(demandPathsMap, numberOfPaths);
 		
 		
 //		System.out.println("---------- 2nd example ----------");
