@@ -12,12 +12,20 @@ import ilog.concert.*;
 import ilog.cplex.*;
 
 public class Model {
-
-	private List<Demand> demands;
-	private List<Path> paths;
+	
+	
+	// params
+	private int modularity;
+	private int[] demands;
+	private int[] initalLoad;
+	private int[][][] delta_edp;
+	
+	// variables
+	
+	
 
 	public Model() {
-
+		
 	}
 
 	public void createModel(CplexInput cplexInput, int numberOfPaths) {
@@ -27,6 +35,15 @@ public class Model {
 					.getDemandPathsMap();
 
 			int d_length = demandPathsMap.keySet().size();
+			demands = new int[d_length];
+			
+			for(Demand d : demandPathsMap.keySet()) {
+				demands[d.getId()-1] = d.getValue();
+			}
+			
+			
+			
+			
 			int p_length = 0;
 			for (Demand d : demandPathsMap.keySet()) {
 				p_length = demandPathsMap.get(d).size();
@@ -35,7 +52,7 @@ public class Model {
 			List<Edge> E = cplexInput.getEdges();
 
 			// definicja deldta_edp
-			Integer[][][] delta_edp = new Integer[E.size()][d_length][p_length];
+			delta_edp = new int[E.size()][d_length][p_length];
 
 			for (Edge e : E) {
 				for (Demand d : demandPathsMap.keySet()) {
@@ -65,25 +82,64 @@ public class Model {
 							Integer.MAX_VALUE, "x_" + d.getId() + "-" + p.getIndex());
 				}
 			}
-
+				
 			// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
 			IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
 
-			// ograniczenie na pojemnosc lacza
-			for(Edge e : E) {
-				IloLinearIntExpr lhs = cplex.linearIntExpr();
+
+			// OGRANICZENIA
+			IloLinearIntExpr[] VOLUME_D = new IloLinearIntExpr[demandPathsMap.keySet().size()];
+			IloLinearIntExpr[] EDGE_CAPACITY = new IloLinearIntExpr[E.size()];
+			
+			
+			// ograniczenie numer 1
+			for(int d=0; d<demands.length; d++) {
+				VOLUME_D[d] = cplex.linearIntExpr();
+				for(int p=0; p<p_length; p++) {
+					VOLUME_D[d].addTerm(1, x_dp[d][p]);
+				}
+				cplex.addEq(VOLUME_D[d], demands[d]);
+			}
+			
+					
+			for(int e = 0; e <E.size();e++) {
+				EDGE_CAPACITY[e] = cplex.linearIntExpr();
+				
+				
+				
 				for(Demand d : demandPathsMap.keySet()) {
 					List<PathWithEgdes> paths = demandPathsMap.get(d);
 					for(PathWithEgdes p : paths) {
-						Integer delta = delta_edp[e.getIndex()-1][d.getId() - 1][p.getIndex() - 1];
+						Integer delta = delta_edp[E.get(e).getIndex()-1][d.getId() - 1][p.getIndex() - 1];
 						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
+						
 					}
 				}
 			}
 			
 			
-			//cplex.addMinimize(y_e);
 			
+			
+//			// ograniczenie na pojemnosc lacza
+//			for(Edge e : E) {
+//				EDGE_CAPACITY[] = cplex.linearIntExpr();
+//				for(Demand d : demandPathsMap.keySet()) {
+//					List<PathWithEgdes> paths = demandPathsMap.get(d);
+//					for(PathWithEgdes p : paths) {
+//						Integer delta = delta_edp[e.getIndex()-1][d.getId() - 1][p.getIndex() - 1];
+//						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
+//						
+//					}
+//				}
+//			}
+			
+			
+			cplex.addMinimize(y_e);
+			
+			
+			if(cplex.solve()) {
+				System.out.println("Solved");
+			}
 			
 			/*
 			 * TUTORIAL:
