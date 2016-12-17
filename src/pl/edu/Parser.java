@@ -84,6 +84,7 @@ public class Parser {
 			System.out.println("Shortest paths:" + shortest_paths_list);
 
 			List<PathWithEgdes> paths = new ArrayList<PathWithEgdes>();
+			int index = 1;
 			for (Path p : shortest_paths_list) {
 				List<BaseVertex> vertices = p.getVertexList();
 				List<Edge> edgesOfPath = new ArrayList<Edge>();
@@ -94,8 +95,9 @@ public class Parser {
 					edgesOfPath.add(edge);
 				}
 				PathWithEgdes path = new PathWithEgdes(
-						shortest_paths_list.indexOf(p) + 1, edgesOfPath);
+						index, edgesOfPath);
 				paths.add(path);
+				index++;
 			}
 
 			map.put(d, paths);
@@ -111,10 +113,10 @@ public class Parser {
 
 		try {
 			PrintWriter writer = new PrintWriter("output/" + fileName, "UTF-8");
-			int count = 1;
+			
 			for (Demand d : demandPathsMap.keySet()) {
 
-				writer.println("Demand: " + count);
+				writer.println("Demand: " + d.getId());
 
 				// demand
 				writer.println(d.getSrcNode() + " " + d.getDstNode() + " "
@@ -126,7 +128,7 @@ public class Parser {
 
 				for (PathWithEgdes p : paths) {
 					// number of edges in path
-					writer.print(paths.indexOf(p) + 1 + " ");
+					writer.print(p.getIndex() + " ");
 					// edges ids
 					for (Edge e : p.getEdges()) {
 						writer.print(e.getIndex() + " ");
@@ -134,7 +136,7 @@ public class Parser {
 					writer.println();
 				}
 				writer.println();
-				count++;
+
 			}
 
 			writer.close();
