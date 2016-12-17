@@ -50,10 +50,9 @@ public class Parser {
 			System.out.println("Edge " + pair.first() + " - " + pair.second()
 					+ ": " + edges.get(pair));
 		}
-		
-		YenTopKShortestPathsAlg yenAlg = new YenTopKShortestPathsAlg(graph);
 
 		for (Demand d : demands) {
+			YenTopKShortestPathsAlg yenAlg = new YenTopKShortestPathsAlg(graph);
 			List<Path> shortest_paths_list = yenAlg.getShortestPaths(
 					graph.getVertex(d.getSrcNode()),
 					graph.getVertex(d.getDstNode()), numberOfPaths);
