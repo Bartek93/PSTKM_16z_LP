@@ -44,5 +44,11 @@ public class Edge {
     {
         this.currentLoad = newLoad;
     }
+
+	@Override
+	public String toString() {
+		return "Edge [index=" + index + ", startNode=" + startNode
+				+ ", endNode=" + endNode + ", currentLoad=" + currentLoad + "]";
+	}
     
 }

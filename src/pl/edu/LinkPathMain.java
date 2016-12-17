@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import edu.asu.emit.algorithm.graph.Path;
+import pl.edu.pojo.CplexInput;
 import pl.edu.pojo.Demand;
 
 public class LinkPathMain {
@@ -15,12 +16,14 @@ public class LinkPathMain {
 		System.out.println("---------- 1st example ----------");
 
 		int numberOfPaths = 3;
-		Map<Demand, List<Path>> demandPathsMap = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", numberOfPaths);
-
+		CplexInput input  = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", numberOfPaths);
+		System.out.println("--- Edges ---");
+		System.out.println(input.getEdges());
+		System.out.println(input.getDemandPathsMap());
 		
-		Parser.dumpToFile(demandPathsMap, "trivial_dump.txt");
-		
-		model.createModel(demandPathsMap, numberOfPaths);
+//		Parser.dumpToFile(input.getDemandPathsMap(), "trivial_dump.txt");
+//		
+//		model.createModel(input, numberOfPaths);
 		
 		
 //		System.out.println("---------- 2nd example ----------");

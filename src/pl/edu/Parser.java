@@ -9,8 +9,10 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import pl.edu.pojo.CplexInput;
 import pl.edu.pojo.Demand;
 import pl.edu.pojo.Edge;
+import pl.edu.pojo.PathWithEgdes;
 import edu.asu.emit.algorithm.graph.Path;
 import edu.asu.emit.algorithm.graph.Graph;
 import edu.asu.emit.algorithm.graph.abstraction.BaseVertex;
@@ -19,12 +21,12 @@ import edu.asu.emit.algorithm.utils.Pair;
 
 public class Parser {
 
-	public static Map<Demand, List<Path>> parse(String graphFileName,
+	public static CplexInput parse(String graphFileName,
 			String demandsFileName, int numberOfPaths) {
 
-		Map<Demand, List<Path>> map = new HashMap<Demand, List<Path>>();
+		Map<Demand, List<PathWithEgdes>> map = new HashMap<Demand, List<PathWithEgdes>>();
 		List<Demand> demands = new ArrayList<Demand>();
-		
+		CplexInput cplexInput = new CplexInput();
 		// get demands
 		try {
 			// 1. read the file and put the content in the buffer
@@ -57,6 +59,8 @@ public class Parser {
 			edges.add(edge);
 			count++;
 		}
+		
+		cplexInput.setEdges(edges);
 
 		// get list of paths for every demand
 		for (Demand d : demands) {
@@ -67,10 +71,28 @@ public class Parser {
 			System.out.println("\nSource node: " + d.getSrcNode()
 					+ ", destination node: " + d.getDstNode());
 			System.out.println("Shortest paths:" + shortest_paths_list);
-			map.put(d, shortest_paths_list);
+			
+			List<PathWithEgdes> paths = new ArrayList<PathWithEgdes>();
+			for(Path p : shortest_paths_list) {
+				List<BaseVertex> vertices = p.getVertexList();
+				List<Edge> edgesOfPath = new ArrayList<Edge>();
+				for(int i = 0; i < vertices.size()-1; i++) {
+					int src = vertices.get(i).getId();
+					int dst = vertices.get(i+1).getId();
+					Edge edge = cplexInput.getEdgeByNodePair(src, dst);
+					edgesOfPath.add(edge);
+				}
+				PathWithEgdes path = new PathWithEgdes(shortest_paths_list.indexOf(p)+1, edgesOfPath);
+				paths.add(path);
+			}
+			
+			
+			map.put(d, paths);
 		}
 		
-		return map;
+		cplexInput.setDemandPathsMap(map);
+		
+		return cplexInput;
 	}
 
 	public static void dumpToFile(Map<Demand, List<Path>> demandPathsMap, String fileName) {
