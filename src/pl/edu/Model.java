@@ -34,8 +34,8 @@ public class Model {
 			}
 			List<Edge> E = cplexInput.getEdges();
 
-			// definicja
-			Integer[][][] delta_vdp = new Integer[E.size()][d_length][p_length];
+			// definicja deldta_edp
+			Integer[][][] delta_edp = new Integer[E.size()][d_length][p_length];
 
 			for (Edge e : E) {
 				for (Demand d : demandPathsMap.keySet()) {
@@ -46,7 +46,7 @@ public class Model {
 							System.out.println("Edge: " + e.getIndex());
 							System.out.println("Demand: " + d.getId());
 							System.out.println("Is in path: " + p.getIndex());
-							delta_vdp[e.getIndex() - 1][d.getId() - 1][p
+							delta_edp[e.getIndex() - 1][d.getId() - 1][p
 									.getIndex() - 1] = 1;
 						}
 					}
@@ -56,19 +56,35 @@ public class Model {
 			IloCplex cplex = new IloCplex();
 
 			// x_dp
-			IloNumVar[][] x_dp = new IloNumVar[d_length][p_length];
+			IloIntVar[][] x_dp = new IloIntVar[d_length][p_length];
 			for (Demand d : demandPathsMap.keySet()) {
 				List<PathWithEgdes> paths = demandPathsMap.get(d);
 				for (PathWithEgdes p : paths) {
-					int pathId = paths.indexOf(p) + 1;
-					x_dp[d.getId() - 1][pathId] = cplex.intVar(0,
-							Integer.MAX_VALUE, "x_" + d.getId() + "-" + pathId);
+					
+					x_dp[d.getId() - 1][p.getIndex()-1] = cplex.intVar(0,
+							Integer.MAX_VALUE, "x_" + d.getId() + "-" + p.getIndex());
 				}
 			}
 
-			// / Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
+			// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
 			IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
 
+			// ograniczenie na pojemnosc lacza
+			for(Edge e : E) {
+				IloLinearIntExpr lhs = cplex.linearIntExpr();
+				for(Demand d : demandPathsMap.keySet()) {
+					List<PathWithEgdes> paths = demandPathsMap.get(d);
+					for(PathWithEgdes p : paths) {
+						Integer delta = delta_edp[e.getIndex()-1][d.getId() - 1][p.getIndex() - 1];
+						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
+					}
+				}
+			}
+			
+			
+			//cplex.addMinimize(y_e);
+			
+			
 			/*
 			 * TUTORIAL:
 			 * https://www.youtube.com/watch?v=HMLLDp476ts&index=3&list
