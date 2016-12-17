@@ -56,6 +56,8 @@ public class Model {
 
 			System.out.println("\n\n\nBuild delta");
 
+			System.out.println("\n\n\nBuild delta");
+
 			for (Edge e : E) {
                                 System.out.println("---------- Egde " + e.getIndex() 
                                         + " (" + e.getStartNode() + "  -> " + e.getEndNode() +  ") -----------");
