@@ -54,18 +54,27 @@ public class Model {
 			// definicja deldta_edp
 			delta_edp = new int[E.size()][d_length][p_length];
 
+			System.out.println("\n\n\nBuild delta");
+
 			for (Edge e : E) {
+                                System.out.println("---------- Egde " + e.getIndex() 
+                                        + " (" + e.getStartNode() + "  -> " + e.getEndNode() +  ") -----------");
 				for (Demand d : demandPathsMap.keySet()) {
+                                        System.out.println("-----  Demand " + d.getId() 
+                                                 + " (" + d.getSrcNode() + "  -> " + d.getDstNode() +  ") -----");
 					List<PathWithEgdes> paths = demandPathsMap.get(d);
 					for (PathWithEgdes p : paths) {
 						if (checkInPath(e, p)) {
+                                                        System.out.println("Path: " + p.getIndex() + " contains edge: " + e.getIndex());
 							System.out.println("Path: " + p);
 							System.out.println("Edge: " + e.getIndex());
 							System.out.println("Demand: " + d.getId());
 							System.out.println("Is in path: " + p.getIndex());
-							delta_edp[e.getIndex() - 1][d.getId() - 1][p
-									.getIndex() - 1] = 1;
+							delta_edp[e.getIndex() - 1][d.getId() - 1]
+                                                                [p.getIndex() - 1] = 1;
 						}
+                                                else
+                                                    System.out.println("Path: " + p.getIndex() + " NOT contain edge: " + e.getIndex());
 					}
 				}
 			}
@@ -102,20 +111,20 @@ public class Model {
 			}
 			
 					
-			for(int e = 0; e <E.size();e++) {
-				EDGE_CAPACITY[e] = cplex.linearIntExpr();
-				
-				
-				
-				for(Demand d : demandPathsMap.keySet()) {
-					List<PathWithEgdes> paths = demandPathsMap.get(d);
-					for(PathWithEgdes p : paths) {
-						Integer delta = delta_edp[E.get(e).getIndex()-1][d.getId() - 1][p.getIndex() - 1];
-						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
-						
-					}
-				}
-			}
+//			for(int e = 0; e <E.size();e++) {
+//				EDGE_CAPACITY[e] = cplex.linearIntExpr();
+//				
+//				
+//				
+//				for(Demand d : demandPathsMap.keySet()) {
+//					List<PathWithEgdes> paths = demandPathsMap.get(d);
+//					for(PathWithEgdes p : paths) {
+//						Integer delta = delta_edp[E.get(e).getIndex()-1][d.getId() - 1][p.getIndex() - 1];
+//						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
+//						
+//					}
+//				}
+//			}
 			
 			
 			
