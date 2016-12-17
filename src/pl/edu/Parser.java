@@ -48,9 +48,9 @@ public class Parser {
 					+ ": " + edges.get(pair));
 		}
 		System.out.println("Vertices: " + graph.getVertexList());
-		YenTopKShortestPathsAlg yenAlg = new YenTopKShortestPathsAlg(graph);
 
 		for (Demand d : demands) {
+			YenTopKShortestPathsAlg yenAlg = new YenTopKShortestPathsAlg(graph);
 			List<Path> shortest_paths_list = yenAlg.getShortestPaths(
 					graph.getVertex(d.getSrcNode()),
 					graph.getVertex(d.getDstNode()), numberOfPaths);
@@ -95,7 +95,6 @@ public class Parser {
 
 	public static void dumpToFile(Map<Demand, List<Path>> demandPathsMap,
 			String fileName) {
-
 		try {
 			PrintWriter writer = new PrintWriter("output/" + fileName, "UTF-8");
 			int count = 1;
