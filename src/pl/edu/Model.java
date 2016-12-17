@@ -40,10 +40,7 @@ public class Model {
 			for(Demand d : demandPathsMap.keySet()) {
 				demands[d.getId()-1] = d.getValue();
 			}
-			
-			
-			
-			
+                        
 			int p_length = 0;
 			for (Demand d : demandPathsMap.keySet()) {
 				p_length = demandPathsMap.get(d).size();
@@ -55,10 +52,7 @@ public class Model {
 			delta_edp = new int[E.size()][d_length][p_length];
 
 			System.out.println("\n\n\nBuild delta");
-
-			System.out.println("\n\n\nBuild delta");
-
-			System.out.println("\n\n\nBuild delta");
+                        
 
 			for (Edge e : E) {
                                 System.out.println("---------- Egde " + e.getIndex() 
@@ -78,7 +72,12 @@ public class Model {
                                                                 [p.getIndex() - 1] = 1;
 						}
                                                 else
+                                                {
+                                                    delta_edp[e.getIndex() - 1][d.getId() - 1]
+                                                                [p.getIndex() - 1] = 0;
                                                     System.out.println("Path: " + p.getIndex() + " NOT contain edge: " + e.getIndex());
+                                                }
+                                                    
 					}
 				}
 			}
@@ -96,8 +95,18 @@ public class Model {
 				}
 			}
 				
-			// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
-			IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
+			// Definicja zmiennej y_e
+			//IloIntVar[] y_e = new IloIntVar[E.size()];
+                        
+                        //Definicja stalej u_e
+                        int[] u_e = new int[E.size()/2];
+                        for (Edge e : E)
+                        {
+                            if (u_e[e.getIndex()-1] != 0)
+                                continue;
+                            u_e[e.getIndex()-1] += e.getCurrentLoad();
+                            System.out.println("CurrentLoad of edge " + e.getIndex() + " = " + u_e[e.getIndex()-1]);   
+                        }
 
 
 			// OGRANICZENIA
@@ -147,7 +156,7 @@ public class Model {
 //			}
 			
 			
-			cplex.addMinimize(y_e);
+			//cplex.addMinimize(y_e);
 			
 			
 			if(cplex.solve()) {
