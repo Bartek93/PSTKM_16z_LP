@@ -31,7 +31,7 @@ public class PathWithEgdes {
 
 	@Override
 	public String toString() {
-		return "PathWithEgdes [index=" + index + ", edges=" + edges + "]";
+		return "\n-- PathWithEgdes [index=" + index + ", edges=" + edges + "]";
 	}
 	
 	

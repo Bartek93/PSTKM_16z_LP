@@ -26,7 +26,7 @@ public class Model {
         try {
         	Map<Demand, List<PathWithEgdes>> demandPathsMap = cplexInput.getDemandPathsMap();
         	
-            IloCplex cplex = new IloCplex();
+            //IloCplex cplex = new IloCplex();
             int d_length = demandPathsMap.keySet().size();
             int p_length = 0;
             for(Demand d : demandPathsMap.keySet()) {
@@ -40,12 +40,12 @@ public class Model {
             	List<PathWithEgdes> paths = demandPathsMap.get(d);
             	for(PathWithEgdes p : paths) {
             		int pathId = paths.indexOf(p) + 1;
-            		x_dp[d.getId()-1][pathId] = cplex.intVar(0, Integer.MAX_VALUE, "x_" + d.getId() + "-" + pathId);
+            		//x_dp[d.getId()-1][pathId] = cplex.intVar(0, Integer.MAX_VALUE, "x_" + d.getId() + "-" + pathId);
             	}
             }
             
             /// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
-            IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
+            //IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
             
             // definicja 
             
@@ -73,7 +73,8 @@ public class Model {
             
 
         } 
-        catch (IloException ex) {
+        //catch (IloException ex) {
+        catch (Exception ex) {
                 System.out.println("IloException: " + ex);
         }
     }
