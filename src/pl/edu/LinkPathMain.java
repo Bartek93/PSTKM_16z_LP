@@ -6,6 +6,7 @@ import java.util.Map;
 import edu.asu.emit.algorithm.graph.Path;
 import pl.edu.pojo.CplexInput;
 import pl.edu.pojo.Demand;
+import pl.edu.pojo.Edge;
 
 public class LinkPathMain {
 
@@ -17,9 +18,12 @@ public class LinkPathMain {
 
 		int numberOfPaths = 3;
 		CplexInput input  = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", numberOfPaths);
-		System.out.println("--- Edges ---");
-		System.out.println(input.getEdges());
-		System.out.println(input.getDemandPathsMap());
+		System.out.print("--- Edges ---");
+                for (Edge e : input.getEdges())
+                    System.out.print(e);
+                
+                System.out.println("\n\n--- Demands ---");
+		System.out.print(input.getDemandPathsMap());
 		
 		Parser.dumpToFile(input.getDemandPathsMap(), "trivial_dump.txt");
 		

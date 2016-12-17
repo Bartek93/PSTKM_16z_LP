@@ -48,7 +48,7 @@ public class Demand {
 
 	@Override
 	public String toString() {
-		return "Demand [srcNode=" + srcNode + ", dstNode=" + dstNode
+		return "\nDemand [srcNode=" + srcNode + ", dstNode=" + dstNode
 				+ ", value=" + value + "]";
 	}
 	

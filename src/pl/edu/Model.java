@@ -33,25 +33,25 @@ public class Model {
 				break;
 			}
 			List<Edge> E = cplexInput.getEdges();
-			
+
 			// definicja
 			Integer[][][] delta_vdp = new Integer[E.size()][d_length][p_length];
-			
+
 			for (Edge e : E) {
 				for (Demand d : demandPathsMap.keySet()) {
 					List<PathWithEgdes> paths = demandPathsMap.get(d);
 					for (PathWithEgdes p : paths) {
 						if (checkInPath(e, p)) {
 							System.out.println("Path: " + p);
-							System.out.println("Edge: " + e.getIndex() );
+							System.out.println("Edge: " + e.getIndex());
 							System.out.println("Demand: " + d.getId());
 							System.out.println("Is in path: " + p.getIndex());
-							delta_vdp[e.getIndex()-1][d.getId() - 1][p.getIndex() - 1] = 1;
+							delta_vdp[e.getIndex() - 1][d.getId() - 1][p
+									.getIndex() - 1] = 1;
 						}
 					}
 				}
 			}
-			
 
 			IloCplex cplex = new IloCplex();
 
@@ -87,7 +87,7 @@ public class Model {
 			 * x)),cplex.prod(60, y)), 300); //60x+60y = 300
 			 */
 
-		} catch (IloException ex) {
+		} catch (Exception ex) {
 			System.out.println("IloException: " + ex);
 		}
 	}

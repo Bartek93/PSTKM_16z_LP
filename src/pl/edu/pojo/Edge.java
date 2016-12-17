@@ -52,7 +52,7 @@ public class Edge {
 
 	@Override
 	public String toString() {
-		return "Edge [index=" + index + ", startNode=" + startNode
+		return "\n---- Edge [index=" + index + ", startNode=" + startNode
 				+ ", endNode=" + endNode + ", currentLoad=" + currentLoad + "]";
 	}
     
