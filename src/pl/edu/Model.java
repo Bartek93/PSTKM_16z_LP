@@ -160,14 +160,17 @@ public class Model {
 				System.out.println("Result: " + cplex.getObjValue());
 
 				double[] values = cplex.getValues(y_e);
-				double[] xdps = cplex.getValues(x_dp[0]);
 
 				for (double d : values) {
 					System.out.println("Y_e: " + d);
 				}
-
-				for (double d : xdps) {
-					System.out.println("x_dp: " + d);
+				
+				for(int i=0; i<demands.length; i++) {
+					System.out.println("Demand " + (i+1) + ", value=" + demands[i]);
+					double[] xdps = cplex.getValues(x_dp[i]);
+					for (double d : xdps) {
+						System.out.println("x_dp: " + d);
+					}
 				}
 			}
 

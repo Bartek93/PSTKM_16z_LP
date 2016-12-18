@@ -13,11 +13,14 @@ public class LinkPathMain {
 	public static void main(String[] args) {
 		
 		Model model = new Model();
+		int numberOfPaths = 5;
 		
 		System.out.println("---------- 1st example ----------");
-
-		int numberOfPaths = 3;
-		CplexInput input  = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", numberOfPaths);
+//		CplexInput input  = Parser.parse("resources/trivial.txt", "resources/demands_trivial.txt", numberOfPaths);
+		
+		CplexInput input  = Parser.parse("resources/non-trivial_1.txt", "resources/demands_nontrivial1.txt", numberOfPaths);
+		
+		
 		System.out.print("--- Edges ---");
                 for (Edge e : input.getEdges())
                     System.out.print(e);
@@ -25,7 +28,11 @@ public class LinkPathMain {
                 System.out.println("\n\n--- Demands ---");
 		System.out.print(input.getDemandPathsMap());
 		
-		Parser.dumpToFile(input.getDemandPathsMap(), "trivial_dump.txt");
+		
+//		// 1st
+//		Parser.dumpToFile(input.getDemandPathsMap(), "trivial_dump.txt");
+		// 2nd 
+		Parser.dumpToFile(input.getDemandPathsMap(), "nontrivial1_dump.txt");
 		
 		model.createModel(input, numberOfPaths);
 		
