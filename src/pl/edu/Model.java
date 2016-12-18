@@ -52,8 +52,6 @@ public class Model {
 
 			System.out.println("\n\n\nBuild delta");
 
-			System.out.println("\n\n\nBuild delta");
-
 			for (Edge e : E) {
 				System.out.println("---------- Egde " + e.getIndex() + " ("
 						+ e.getStartNode() + "  -> " + e.getEndNode()
@@ -71,11 +69,16 @@ public class Model {
 							System.out.println("Edge: " + e.getIndex());
 							System.out.println("Demand: " + d.getId());
 							System.out.println("Is in path: " + p.getIndex());
+
 							delta_edp[e.getIndex() - 1][d.getId() - 1][p
 									.getIndex() - 1] = 1;
-						} else
+						} else {
+							delta_edp[e.getIndex() - 1][d.getId() - 1][p
+									.getIndex() - 1] = 0;
 							System.out.println("Path: " + p.getIndex()
 									+ " NOT contain edge: " + e.getIndex());
+						}
+
 					}
 				}
 			}
@@ -94,6 +97,16 @@ public class Model {
 				}
 			}
 
+			// Definicja stalej u_e
+			int[] u_e = new int[E.size()];
+			for (Edge e : E) {
+				if (u_e[e.getIndex() - 1] != 0)
+					continue;
+				u_e[e.getIndex() - 1] += e.getCurrentLoad();
+				System.out.println("CurrentLoad of edge " + e.getIndex()
+						+ " = " + u_e[e.getIndex() - 1]);
+			}
+
 			// Definicja zmiennej y_e, volumen zapotrzebowania d, h_d >= 0
 			IloIntVar[] y_e = cplex.intVarArray(E.size(), 0, Integer.MAX_VALUE);
 
@@ -101,7 +114,7 @@ public class Model {
 			IloLinearIntExpr[] VOLUME_D = new IloLinearIntExpr[demandPathsMap
 					.keySet().size()];
 			IloLinearIntExpr[] FLOWS = new IloLinearIntExpr[E.size()];
-			
+
 			// ograniczenie numer 1
 			for (int d = 0; d < demands.length; d++) {
 				VOLUME_D[d] = cplex.linearIntExpr();
@@ -110,13 +123,12 @@ public class Model {
 				}
 				cplex.addEq(VOLUME_D[d], demands[d]);
 			}
-			
-			
+
 			// ograniczenie 2
 			for (int e = 0; e < E.size(); e++) {
 				// wyrazenie suma po d,p (delta * xdp) , dla kazdego E
 				FLOWS[e] = cplex.linearIntExpr();
-				
+
 				for (Demand d : demandPathsMap.keySet()) {
 					List<PathWithEgdes> paths = demandPathsMap.get(d);
 					for (PathWithEgdes p : paths) {
@@ -128,54 +140,36 @@ public class Model {
 				}
 				// lewa strona, obciazenie poczatkowe + wyrazenie FLOWS
 				IloIntExpr lhs = cplex.sum(E.get(e).getCurrentLoad(), FLOWS[e]);
-				
+
 				IloLinearIntExpr rhs = cplex.linearIntExpr();
 				rhs.addTerm(Config.MODULARITY, y_e[e]);
-				
+
 				cplex.addLe(lhs, rhs);
 			}
-			
+
 			IloLinearIntExpr objective = cplex.linearIntExpr();
 
-			for(int e=0; e<E.size();e++) {
+			for (int e = 0; e < E.size(); e++) {
 				objective.addTerm(1, y_e[e]);
 			}
-			
+
 			cplex.addMinimize(objective);
 
 			if (cplex.solve()) {
 				System.out.println("Solved");
 				System.out.println("Result: " + cplex.getObjValue());
-				
+
 				double[] values = cplex.getValues(y_e);
 				double[] xdps = cplex.getValues(x_dp[0]);
-				
-				for(double d : values) {
+
+				for (double d : values) {
 					System.out.println("Y_e: " + d);
 				}
-				
-				for(double d : xdps) {
+
+				for (double d : xdps) {
 					System.out.println("x_dp: " + d);
 				}
 			}
-
-			/*
-			 * TUTORIAL:
-			 * https://www.youtube.com/watch?v=HMLLDp476ts&index=3&list
-			 * =PL9xwgp-nwd-wwPhYaN3vUyduglg2m-xHO //cplex syntax exaple (it
-			 * does nothing in project :D its only example): //min(0.5*x + y)
-			 * //define vars: IloLineraNumExpr objective =
-			 * cplex.lineraNumExpr(); objective.addTerm(0.5, x);
-			 * objective.addTerm(1, y);
-			 * 
-			 * //define objective cplex.addMinimize(objective);
-			 * 
-			 * //define constraints cplex.addGe(cplex.sum(cplex.prod(60,
-			 * x)),cplex.prod(60, y)), 300); // 60x+60y >= 300
-			 * cplex.addLe(cplex.sum(cplex.prod(60, x)),cplex.prod(60, y)),
-			 * 300); //60x+60y <= 300 cplex.addEq(cplex.sum(cplex.prod(60,
-			 * x)),cplex.prod(60, y)), 300); //60x+60y = 300
-			 */
 
 		} catch (Exception ex) {
 			System.out.println("IloException: " + ex);
