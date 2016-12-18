@@ -172,7 +172,7 @@ public class Model {
 				}
                                 System.out.println("\n******* Final results *******");
                                 System.out.println("Initial_modules: " + initial_modules);
-				System.out.println("Result: " + (int)cplex.getObjValue());
+				System.out.println("Final modules:   " + (int)cplex.getObjValue());
                                 System.out.println("Site-Surveys needed: " + 2*(int)(cplex.getObjValue() - initial_modules));
                                 System.out.println("*****************************");
 			}

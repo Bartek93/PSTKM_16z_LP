@@ -128,7 +128,7 @@ public class Parser {
 
 				for (PathWithEgdes p : paths) {
 					// number of edges in path
-					writer.print(p.getIndex() + " ");
+					writer.print(p.getEdges().size() + " ");
 					// edges ids
 					for (Edge e : p.getEdges()) {
 						writer.print(e.getIndex() + " ");

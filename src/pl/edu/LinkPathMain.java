@@ -56,11 +56,11 @@ public class LinkPathMain {
             do
             {
                 System.out.println("*****************************************************************************");
-                System.out.println("Wybierz scenariusz ktory chcesz uruchomić poprzez podanie wybranej liczby:");
-                System.out.println("1. Scenariusz trywialny");
-                System.out.println("2. Scenariusz nietrywialny 1");
-                System.out.println("3. Scenariusz nietrywialny 2");
-                System.out.println("Your choice: ");
+                System.out.println("Type number to run specific scenario:");
+                System.out.println("1. Trivial scenario");
+                System.out.println("2. Non-trivial 1 scenario");
+                System.out.println("3. Non-trivial 2 scenario");
+                System.out.println("Type number: ");
                 Scanner scan = new Scanner(System.in);
                 choice = scan.nextLine();
             }
