@@ -44,11 +44,10 @@ public class Model {
 				break;
 			}
 			List<Edge> E = cplexInput.getEdges();
-
+			int initial_modules = getInitialModules(E);
 			// definicja deldta_edp
 			delta_edp = new int[E.size()][d_length][p_length];
 
-			System.out.println("\n\n\nBuild delta");
 
 			System.out.println("\n\n\nBuild delta");
 
@@ -157,6 +156,8 @@ public class Model {
 
 			if (cplex.solve()) {
 				System.out.println("Solved");
+				System.out.println(cplex.toString());
+				System.out.println("Initial_modules: " + initial_modules);
 				System.out.println("Result: " + cplex.getObjValue());
 
 				double[] values = cplex.getValues(y_e);
@@ -168,8 +169,8 @@ public class Model {
 				for(int i=0; i<demands.length; i++) {
 					System.out.println("Demand " + (i+1) + ", value=" + demands[i]);
 					double[] xdps = cplex.getValues(x_dp[i]);
-					for (double d : xdps) {
-						System.out.println("x_dp: " + d);
+					for (int y=0; y<xdps.length; y++) {
+						System.out.println("x_dp[" + (i+1) + "][" + (y+1) + "]: " + xdps[y]);
 					}
 				}
 			}
@@ -177,6 +178,15 @@ public class Model {
 		} catch (Exception ex) {
 			System.out.println("IloException: " + ex);
 		}
+	}
+	
+	public int getInitialModules(List<Edge> edges) {
+		int count = 0;
+		for(Edge e : edges) {
+			double dbl = (double) ((double) e.getCurrentLoad() / (double) Config.MODULARITY);
+			count += (int) Math.ceil(dbl);
+		}
+		return count;
 	}
 
 	private boolean checkInPath(Edge e, PathWithEgdes p) {
