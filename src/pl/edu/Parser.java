@@ -60,15 +60,15 @@ public class Parser {
 					edgesMap.get(pair));
 			if (!edges.isEmpty()) {
 				Edge lastEdge = edges.get(edges.size() - 1);
-				if (lastEdge.getEndNode() == edge.getStartNode()
-						&& lastEdge.getStartNode() == edge.getEndNode()) {
-					// the same edge
-					edge.setIndex(lastEdge.getIndex());
+				if ( !(lastEdge.getEndNode() == edge.getStartNode()
+						&& lastEdge.getStartNode() == edge.getEndNode()) ) {
+					edges.add(edge);
 					count++;
 				}
+			} else {
+				edges.add(edge);
+				count++;
 			}
-			edges.add(edge);
-
 		}
 
 		cplexInput.setEdges(edges);

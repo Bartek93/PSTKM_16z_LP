@@ -12,20 +12,17 @@ import ilog.concert.*;
 import ilog.cplex.*;
 
 public class Model {
-	
-	
+
 	// params
 	private int modularity;
 	private int[] demands;
 	private int[] initalLoad;
 	private int[][][] delta_edp;
-	
+
 	// variables
-	
-	
 
 	public Model() {
-		
+
 	}
 
 	public void createModel(CplexInput cplexInput, int numberOfPaths) {
@@ -36,14 +33,11 @@ public class Model {
 
 			int d_length = demandPathsMap.keySet().size();
 			demands = new int[d_length];
-			
-			for(Demand d : demandPathsMap.keySet()) {
-				demands[d.getId()-1] = d.getValue();
+
+			for (Demand d : demandPathsMap.keySet()) {
+				demands[d.getId() - 1] = d.getValue();
 			}
-			
-			
-			
-			
+
 			int p_length = 0;
 			for (Demand d : demandPathsMap.keySet()) {
 				p_length = demandPathsMap.get(d).size();
@@ -58,25 +52,30 @@ public class Model {
 
 			System.out.println("\n\n\nBuild delta");
 
+			System.out.println("\n\n\nBuild delta");
+
 			for (Edge e : E) {
-                                System.out.println("---------- Egde " + e.getIndex() 
-                                        + " (" + e.getStartNode() + "  -> " + e.getEndNode() +  ") -----------");
+				System.out.println("---------- Egde " + e.getIndex() + " ("
+						+ e.getStartNode() + "  -> " + e.getEndNode()
+						+ ") -----------");
 				for (Demand d : demandPathsMap.keySet()) {
-                                        System.out.println("-----  Demand " + d.getId() 
-                                                 + " (" + d.getSrcNode() + "  -> " + d.getDstNode() +  ") -----");
+					System.out.println("-----  Demand " + d.getId() + " ("
+							+ d.getSrcNode() + "  -> " + d.getDstNode()
+							+ ") -----");
 					List<PathWithEgdes> paths = demandPathsMap.get(d);
 					for (PathWithEgdes p : paths) {
 						if (checkInPath(e, p)) {
-                                                        System.out.println("Path: " + p.getIndex() + " contains edge: " + e.getIndex());
+							System.out.println("Path: " + p.getIndex()
+									+ " contains edge: " + e.getIndex());
 							System.out.println("Path: " + p);
 							System.out.println("Edge: " + e.getIndex());
 							System.out.println("Demand: " + d.getId());
 							System.out.println("Is in path: " + p.getIndex());
-							delta_edp[e.getIndex() - 1][d.getId() - 1]
-                                                                [p.getIndex() - 1] = 1;
-						}
-                                                else
-                                                    System.out.println("Path: " + p.getIndex() + " NOT contain edge: " + e.getIndex());
+							delta_edp[e.getIndex() - 1][d.getId() - 1][p
+									.getIndex() - 1] = 1;
+						} else
+							System.out.println("Path: " + p.getIndex()
+									+ " NOT contain edge: " + e.getIndex());
 					}
 				}
 			}
@@ -88,70 +87,78 @@ public class Model {
 			for (Demand d : demandPathsMap.keySet()) {
 				List<PathWithEgdes> paths = demandPathsMap.get(d);
 				for (PathWithEgdes p : paths) {
-					
-					x_dp[d.getId() - 1][p.getIndex()-1] = cplex.intVar(0,
-							Integer.MAX_VALUE, "x_" + d.getId() + "-" + p.getIndex());
+
+					x_dp[d.getId() - 1][p.getIndex() - 1] = cplex.intVar(0,
+							Integer.MAX_VALUE,
+							"x_" + d.getId() + "-" + p.getIndex());
 				}
 			}
-				
-			// Definicja zmiennej h_d, volumen zapotrzebowania d, h_d >= 0
-			IloIntVar y_e = cplex.intVar(0, Integer.MAX_VALUE, "y_e");
 
+			// Definicja zmiennej y_e, volumen zapotrzebowania d, h_d >= 0
+			IloIntVar[] y_e = cplex.intVarArray(E.size(), 0, Integer.MAX_VALUE);
 
 			// OGRANICZENIA
-			IloLinearIntExpr[] VOLUME_D = new IloLinearIntExpr[demandPathsMap.keySet().size()];
-			IloLinearIntExpr[] EDGE_CAPACITY = new IloLinearIntExpr[E.size()];
-			
+			IloLinearIntExpr[] VOLUME_D = new IloLinearIntExpr[demandPathsMap
+					.keySet().size()];
+			IloLinearIntExpr[] FLOWS = new IloLinearIntExpr[E.size()];
 			
 			// ograniczenie numer 1
-			for(int d=0; d<demands.length; d++) {
+			for (int d = 0; d < demands.length; d++) {
 				VOLUME_D[d] = cplex.linearIntExpr();
-				for(int p=0; p<p_length; p++) {
+				for (int p = 0; p < p_length; p++) {
 					VOLUME_D[d].addTerm(1, x_dp[d][p]);
 				}
 				cplex.addEq(VOLUME_D[d], demands[d]);
 			}
 			
-					
-//			for(int e = 0; e <E.size();e++) {
-//				EDGE_CAPACITY[e] = cplex.linearIntExpr();
-//				
-//				
-//				
-//				for(Demand d : demandPathsMap.keySet()) {
-//					List<PathWithEgdes> paths = demandPathsMap.get(d);
-//					for(PathWithEgdes p : paths) {
-//						Integer delta = delta_edp[E.get(e).getIndex()-1][d.getId() - 1][p.getIndex() - 1];
-//						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
-//						
-//					}
-//				}
-//			}
 			
-			
-			
-			
-//			// ograniczenie na pojemnosc lacza
-//			for(Edge e : E) {
-//				EDGE_CAPACITY[] = cplex.linearIntExpr();
-//				for(Demand d : demandPathsMap.keySet()) {
-//					List<PathWithEgdes> paths = demandPathsMap.get(d);
-//					for(PathWithEgdes p : paths) {
-//						Integer delta = delta_edp[e.getIndex()-1][d.getId() - 1][p.getIndex() - 1];
-//						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
-//						
-//					}
-//				}
-//			}
-			
-			
-			cplex.addMinimize(y_e);
-			
-			
-			if(cplex.solve()) {
-				System.out.println("Solved");
+			// ograniczenie 2
+			for (int e = 0; e < E.size(); e++) {
+				// wyrazenie suma po d,p (delta * xdp) , dla kazdego E
+				FLOWS[e] = cplex.linearIntExpr();
+				
+				for (Demand d : demandPathsMap.keySet()) {
+					List<PathWithEgdes> paths = demandPathsMap.get(d);
+					for (PathWithEgdes p : paths) {
+						Integer delta = delta_edp[E.get(e).getIndex() - 1][d
+								.getId() - 1][p.getIndex() - 1];
+						IloIntVar x = x_dp[d.getId() - 1][p.getIndex() - 1];
+						FLOWS[e].addTerm(delta, x);
+					}
+				}
+				// lewa strona, obciazenie poczatkowe + wyrazenie FLOWS
+				IloIntExpr lhs = cplex.sum(E.get(e).getCurrentLoad(), FLOWS[e]);
+				
+				IloLinearIntExpr rhs = cplex.linearIntExpr();
+				rhs.addTerm(Config.MODULARITY, y_e[e]);
+				
+				cplex.addLe(lhs, rhs);
 			}
 			
+			IloLinearIntExpr objective = cplex.linearIntExpr();
+
+			for(int e=0; e<E.size();e++) {
+				objective.addTerm(1, y_e[e]);
+			}
+			
+			cplex.addMinimize(objective);
+
+			if (cplex.solve()) {
+				System.out.println("Solved");
+				System.out.println("Result: " + cplex.getObjValue());
+				
+				double[] values = cplex.getValues(y_e);
+				double[] xdps = cplex.getValues(x_dp[0]);
+				
+				for(double d : values) {
+					System.out.println("Y_e: " + d);
+				}
+				
+				for(double d : xdps) {
+					System.out.println("x_dp: " + d);
+				}
+			}
+
 			/*
 			 * TUTORIAL:
 			 * https://www.youtube.com/watch?v=HMLLDp476ts&index=3&list

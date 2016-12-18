@@ -25,6 +25,8 @@ public class CplexInput {
 		for(Edge e : edges) {
 			if(e.getStartNode() == src && e.getEndNode() == dst) {
 				return e;
+			} else if (e.getEndNode() == src && e.getStartNode() == dst) {
+				return e;
 			}
 		}
 		return null;
