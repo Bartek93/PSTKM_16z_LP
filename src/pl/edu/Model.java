@@ -157,9 +157,6 @@ public class Model {
 			if (cplex.solve()) {
 				System.out.println("Solved");
 				System.out.println(cplex.toString());
-				System.out.println("Initial_modules: " + initial_modules);
-				System.out.println("Result: " + cplex.getObjValue());
-
 				double[] values = cplex.getValues(y_e);
 
 				for (double d : values) {
@@ -173,6 +170,11 @@ public class Model {
 						System.out.println("x_dp[" + (i+1) + "][" + (y+1) + "]: " + xdps[y]);
 					}
 				}
+                                System.out.println("\n******* Final results *******");
+                                System.out.println("Initial_modules: " + initial_modules);
+				System.out.println("Result: " + (int)cplex.getObjValue());
+                                System.out.println("Site-Surveys needed: " + 2*(int)(cplex.getObjValue() - initial_modules));
+                                System.out.println("*****************************");
 			}
 
 		} catch (Exception ex) {
