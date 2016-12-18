@@ -80,13 +80,12 @@ public class LinkPathMain {
             else if (scenario == 2)
                 System.out.println("Non-trivial 1 scenario - max: 4");
             else
-                System.out.println("Non-trivial 2 scenario - max: 10");
+                System.out.println("Non-trivial 2 scenario - max: 7");
             System.out.println("Type number of paths: ");
             Scanner scan = new Scanner(System.in);
             choice = scan.nextLine();
             
-            return Integer.parseInt(choice);
-            
+            return Integer.parseInt(choice); 
         }
         
         public static Integer setModularity()

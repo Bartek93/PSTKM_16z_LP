@@ -51,22 +51,24 @@ public class Model {
 
 			System.out.println("\n\n\nBuild delta");
 			for (Edge e : E) {
-				System.out.println("---------- Egde " + e.getIndex() + " ("
+				System.out.println("---------- Egde " + e.getIndex() ); 
+                                                /* + " ("
 						+ e.getStartNode() + "  -> " + e.getEndNode()
-						+ ") -----------");
+						+ ") -----------");*/
 				for (Demand d : demandPathsMap.keySet()) {
-					System.out.println("-----  Demand " + d.getId() + " ("
+					System.out.println("-----  Demand " + d.getId());
+                                                        /*+ " ("
 							+ d.getSrcNode() + "  -> " + d.getDstNode()
-							+ ") -----");
+							+ ") -----");*/
 					List<PathWithEgdes> paths = demandPathsMap.get(d);
 					for (PathWithEgdes p : paths) {
 						if (checkInPath(e, p)) {
 							System.out.println("Path: " + p.getIndex()
 									+ " contains edge: " + e.getIndex());
-							System.out.println("Path: " + p);
+							/*System.out.println("Path: " + p);
 							System.out.println("Edge: " + e.getIndex());
 							System.out.println("Demand: " + d.getId());
-							System.out.println("Is in path: " + p.getIndex());
+							System.out.println("Is in path: " + p.getIndex());*/
 
 							delta_edp[e.getIndex() - 1][d.getId() - 1][p
 									.getIndex() - 1] = 1;
@@ -158,8 +160,8 @@ public class Model {
 				System.out.println(cplex.toString());
 				double[] values = cplex.getValues(y_e);
 
-				for (double d : values) {
-					System.out.println("Y_e: " + d);
+				for (int d = 1; d <= values.length; d++) {
+					System.out.println("Y_e[" + d + "]: " + values[d-1]);
 				}
 				
 				for(int i=0; i<demands.length; i++) {
